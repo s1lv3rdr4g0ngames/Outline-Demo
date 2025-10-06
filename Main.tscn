@@ -1,0 +1,142 @@
+[gd_scene load_steps=16 format=3 uid="uid://culbmljua4qub"]
+
+[ext_resource type="Material" uid="uid://cho7ytnvwgr1r" path="res://Shaders/CanvasOutlineMaterial.tres" id="1_r0du0"]
+[ext_resource type="PackedScene" uid="uid://bd3l6yq14qvg7" path="res://models/tree_pine_default_b_2.tscn" id="2_r0du0"]
+[ext_resource type="Material" uid="uid://dfl371w3s2yvr" path="res://Shaders/OutlineDefinerMaterial.tres" id="2_uu6xs"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_rxg2q"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="Animation" id="Animation_uu6xs"]
+resource_name = "Spin"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 9.766667, 10.033334),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.265732, 0), Vector3(0, 6.2831855, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_r0du0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cm0pq"]
+_data = {
+&"RESET": SubResource("Animation_r0du0"),
+&"Spin": SubResource("Animation_uu6xs")
+}
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uu6xs"]
+albedo_color = Color(0.58, 0.58, 0.58, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_r0du0"]
+material = SubResource("StandardMaterial3D_uu6xs")
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uu6xs"]
+size = Vector3(3, 5, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_r0du0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cm0pq"]
+next_pass = ExtResource("2_uu6xs")
+albedo_color = Color(1, 0.73, 0.9415, 1)
+metallic = 0.25
+metallic_specular = 0.12
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_uu6xs"]
+sky_top_color = Color(0.2930299, 0.39604625, 0.86376834, 1)
+
+[sub_resource type="Sky" id="Sky_r0du0"]
+sky_material = SubResource("ProceduralSkyMaterial_uu6xs")
+
+[sub_resource type="Environment" id="Environment_cm0pq"]
+background_mode = 2
+sky = SubResource("Sky_r0du0")
+ambient_light_source = 3
+
+[node name="Node3D" type="Node3D"]
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1152, 648)
+
+[node name="Outliner" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.9760992, 0.21732561, 0, -0.21732561, 0.9760992, 0, 3, 15)
+cull_mask = 1047554
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="3dRender" type="TextureRect" parent="CanvasLayer"]
+material = ExtResource("1_r0du0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_rxg2q")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_cm0pq")
+}
+autoplay = "Spin"
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="MainCamera" type="Camera3D" parent="Pivot"]
+transform = Transform3D(1, 0, 0, 0, 0.9760992, 0.21732561, 0, -0.21732561, 0.9760992, 0, 3, 15)
+current = true
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Pivot/MainCamera"]
+remote_path = NodePath("../../../SubViewport/Outliner")
+
+[node name="NotOutlined" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NotOutlined"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.37218165, 0)
+layers = 3
+mesh = SubResource("BoxMesh_r0du0")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="NotOutlined"]
+transform = Transform3D(0.8242843, 0.4426569, -0.35300168, -0.56617606, 0.64445525, -0.51392806, 0, 0.62348396, 0.78183615, 0, 1.1156137, -3.1161385)
+layers = 3
+mesh = SubResource("BoxMesh_uu6xs")
+
+[node name="Outlined" type="Node3D" parent="."]
+
+[node name="tree_pineDefaultB2" parent="Outlined" instance=ExtResource("2_r0du0")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -4.264121, 0, -2.2166576)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Outlined"]
+transform = Transform3D(1, 0, 0, 0, 0.9252097, -0.37945616, 0, 0.37945616, 0.9252097, 2.284599, 1.0107863, 0.8295001)
+layers = 3
+mesh = SubResource("TorusMesh_r0du0")
+surface_material_override/0 = SubResource("StandardMaterial3D_cm0pq")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cm0pq")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 0.5899576, 0.8074342, 0, -0.8074342, 0.5899576, 0, 3.5429466, 0.9666182)
+light_energy = 1.3
+shadow_enabled = true

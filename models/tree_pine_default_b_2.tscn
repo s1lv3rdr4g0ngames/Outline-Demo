@@ -1,0 +1,28 @@
+[gd_scene load_steps=8 format=3 uid="uid://bd3l6yq14qvg7"]
+
+[ext_resource type="PackedScene" uid="uid://k86dah2adogd" path="res://models/tree_pineDefaultB.glb" id="1_3jj5h"]
+[ext_resource type="Material" uid="uid://dfl371w3s2yvr" path="res://Shaders/OutlineDefinerMaterial.tres" id="2_n03d4"]
+
+[sub_resource type="Gradient" id="Gradient_v6bxe"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ugxp6"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oed7l"]
+noise = SubResource("FastNoiseLite_ugxp6")
+color_ramp = SubResource("Gradient_v6bxe")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3aa5i"]
+next_pass = ExtResource("2_n03d4")
+albedo_color = Color(0.41, 0.29574665, 0.2296, 1)
+albedo_texture = SubResource("NoiseTexture2D_oed7l")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fviwt"]
+next_pass = ExtResource("2_n03d4")
+albedo_color = Color(0.228, 0.6, 0.32099998, 1)
+
+[node name="tree_pineDefaultB2" instance=ExtResource("1_3jj5h")]
+
+[node name="tree_pineDefaultB" parent="." index="0"]
+layers = 3
+surface_material_override/0 = SubResource("StandardMaterial3D_3aa5i")
+surface_material_override/1 = SubResource("StandardMaterial3D_fviwt")
